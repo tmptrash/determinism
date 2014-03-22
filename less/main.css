@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  height: 100%;
+}
+/*
+ * BODY tag has default borders, we need remove to
+ */
+body {
+  overflow: hidden;
+  width: 100%;
+  height: 100;
+}

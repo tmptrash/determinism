@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Determinism demo</title>
+        <!-- Styles -->
+        <link rel="stylesheet" type="text/css" href="less/main.css"/>
+        <link rel="stylesheet" type="text/css" href="less/canvas.css"/>
+        <link rel="stylesheet" type="text/css" href="less/terminal.css"/>
+
+        <!-- Libraries -->
+        <script type="text/javascript" src="js/lib/jquery-2.1.0.js"></script>
+        <script type="text/javascript" src="js/lib/N13/src/n13.js"></script>
+        <script type="text/javascript" src="js/lib/Console.js"></script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <textarea id="terminal"></textarea>
+        <script>
+            //
+            // This is how our application starts. First, we should setup
+            // application root folder (N13.init() call). Second, we need to
+            // create application instance. We also shouldn't save it.
+            //
+            N13.init({appRoot: ['App', 'js']});
+            N13.create('App.App');
+        </script>
+    </body>
+</html>
