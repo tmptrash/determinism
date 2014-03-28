@@ -18,6 +18,16 @@ N13.define('App.help.Common', {
          */
         getCallerName: function () {
             return arguments.callee.caller.name;
+        },
+
+        /**
+         * Returns random number between min and max
+         * @param {Number} min Minimum number
+         * @param {Number} max Maximum number
+         * @returns {Number} Random number
+         */
+        random: function (min, max) {
+            return Math.random() * (max - min) + min;
         }
     }
 });

@@ -6,7 +6,10 @@
  */
 N13.define('App.App', {
     extend  : 'App.Class',
-    requires: 'App.view.ViewPort',
+    requires: [
+        'App.view.ViewPort',
+        'App.view.World'
+    ],
 
     /**
      * Creator and initializer of all private fields. If you don't use or do not need
@@ -16,9 +19,13 @@ N13.define('App.App', {
         this.callParent(arguments);
 
         /**
-         * {String} Main view of the application. It covers all browser client area
+         * {App.view.ViewPort} Main view of the application. It covers all browser client area
          */
         this._viewPort = new App.view.ViewPort();
+        /**
+         * {App.view.World} The world, where all elements leave
+         */
+        this._world    = new App.view.World();
     },
 
     /**
@@ -33,6 +40,6 @@ N13.define('App.App', {
      * Entry point of the application. It will be run after html is ready.
      */
     run: function () {
-        // TODO:
+        this._world.run();
     }
 });

@@ -7,24 +7,59 @@ N13.define('App.element.Atom', {
     configs: {
         /**
          * @required
+         * {Object} The context of the canvas 2d
+         */
+        context: null,
+        /**
+         * @required
          * {Number} X coordinate of the atom
          */
-        x     : null,
+        x      : null,
         /**
          * @required
          * {Number} Y coordinate of the atom
          */
-        y     : null,
+        y      : null,
         /**
          * {Number} Weight of the atom
          */
-        weight: null
+        weight : null,
+        /**
+         * {Number} Increment for X coordinate
+         */
+        incX   : 0.1,
+        /**
+         * {Number} Increment for Y coordinate
+         */
+        incY   : 0.1,
+        /**
+         * {String} Default point color - white
+         */
+        color  : '#FFFFFF'
     },
 
 
     /**
      * @interface
      * Makes a move one period of time
+     * @return {App.element.Atom} itself
      */
-    move: N13.emptyFn
+    move: N13.emptyFn,
+
+    /**
+     * @constructor
+     * Sets default draw color
+     */
+    init: function () {
+        this.context.fillStyle = this.color;
+    },
+
+    /**
+     * Draws itself on the canvas context
+     * @return {App.element.Atom} itself
+     */
+    draw: function () {
+        this.context.fillRect(this.x, this.y, 1, 1);
+        return this;
+    }
 });

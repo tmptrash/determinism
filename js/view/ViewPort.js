@@ -47,9 +47,12 @@ N13.define('App.view.ViewPort', {
      * stretch them on the browser screen.
      */
     onResize: function () {
-        var height = $('html').css('height');
+        var html     = $('html');
+        var height   = html.height();
+        var canvasEl = $('#' + this._canvas.id);
 
-        $('#' + this._canvas.id).height(height - this._terminal.height);
+        canvasEl.attr('height', (height - this._terminal.height));
+        canvasEl.attr('width', html.width());
         $('#' + this._terminal.id).height(this._terminal.height);
     }
 });
