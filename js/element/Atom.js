@@ -46,19 +46,13 @@ N13.define('App.element.Atom', {
      */
     move: N13.emptyFn,
 
-    /**
-     * @constructor
-     * Sets default draw color
-     */
-    init: function () {
-        this.context.fillStyle = this.color;
-    },
 
     /**
      * Draws itself on the canvas context
      * @return {App.element.Atom} itself
      */
     draw: function () {
+        this.context.fillStyle = this.color;
         this.context.fillRect(this.x, this.y, 1, 1);
         return this;
     }

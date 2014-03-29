@@ -19,13 +19,9 @@ N13.define('App.App', {
         this.callParent(arguments);
 
         /**
-         * {App.view.ViewPort} Main view of the application. It covers all browser client area
-         */
-        this._viewPort = new App.view.ViewPort();
-        /**
          * {App.view.World} The world, where all elements leave
          */
-        this._world    = new App.view.World();
+        this._world = new App.view.World();
     },
 
     /**

@@ -5,7 +5,12 @@
  */
 N13.define('App.view.World', {
     extend  : 'App.Class',
-    requires: ['App.element.Hydrogen'],
+    requires: [
+        'App.help.String',
+        'App.view.Canvas',
+        'App.view.Terminal',
+        'App.element.Hydrogen'
+    ],
     configs : {
         /**
          * {Number} Amount of elements in the world
@@ -26,6 +31,14 @@ N13.define('App.view.World', {
      */
     initPrivates: function () {
         /**
+         * {App.view.Canvas} instance of canvas view
+         */
+        this._canvas   = new App.view.Canvas();
+        /**
+         * {App.view.Terminal} instance of terminal view
+         */
+        this._terminal = new App.view.Terminal();
+        /**
          * {Array} Array of elements in the world
          */
         this._elements = [];
@@ -45,25 +58,13 @@ N13.define('App.view.World', {
 
     /**
      * @constructor
+     * Creates elements, binds handlers to events and initializes sizes of nested views
      */
     onInit: function () {
         this.callParent();
-
-        var i;
-        var len     = this.elAmount;
-        var thisEl  = this._canvasEl;
-        var random  = App.help.Common.random;
-        var context = this._context;
-        var width   = thisEl.width();
-        var height  = thisEl.height();
-
-        for (i = 0; i < len; i++) {
-            this._elements.push(new App.element.Hydrogen({
-                x      : random(0, width),
-                y      : random(0, height),
-                context: context
-            }));
-        }
+        this._createElements();
+        this._bindEvents();
+        this._onResize();
     },
 
     /**
@@ -82,13 +83,56 @@ N13.define('App.view.World', {
         var i;
         var len = this.elAmount;
 
-        //
-        // TODO: clearing of the context is a temporary action
-        //
-        //this._context.fillRect(0, 0, this._canvasEl.width(), this._canvasEl.height());
-
         for (i = 0; i < len; i++) {
             this._elements[i].move().draw();
         }
+    },
+
+    /**
+     * Browser window resize event handler. It resize all nested views and
+     * stretch them on the browser screen.
+     */
+    _onResize: function () {
+        var html     = $('html');
+        var height   = html.height();
+        var canvasEl = $('#' + this._canvas.id);
+
+        //
+        // TIP: It's important to set attributes instead of css style, because
+        // TIP: canvas tag understands only this resize. In case of css style
+        // TIP: changing, all draw objects in canvas will be scaled.
+        //
+        canvasEl.attr('height', (height - this._terminal.height));
+        canvasEl.attr('width', html.width());
+        $('#' + this._terminal.id).height(this._terminal.height);
+    },
+
+    /**
+     * Creates all elements in the world and stores them in this._elements
+     * @private
+     */
+    _createElements: function () {
+        var i;
+        var len     = this.elAmount;
+        var thisEl  = this._canvasEl;
+        var random  = App.help.Common.random;
+        var context = this._context;
+        var width   = thisEl.width();
+        var height  = thisEl.height();
+
+        for (i = 0; i < len; i++) {
+            this._elements.push(new App.element.Hydrogen({
+                x      : random(0, width),
+                y      : random(0, height),
+                context: context
+            }));
+        }
+    },
+
+    /**
+     * Binds all handlers to events
+     */
+    _bindEvents: function () {
+        $(window).on('resize', this._onResize.bind(this));
     }
 });
