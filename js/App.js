@@ -6,10 +6,7 @@
  */
 N13.define('App.App', {
     extend  : 'App.Class',
-    requires: [
-        'App.view.ViewPort',
-        'App.view.World'
-    ],
+    requires: 'App.view.World',
 
     /**
      * Creator and initializer of all private fields. If you don't use or do not need

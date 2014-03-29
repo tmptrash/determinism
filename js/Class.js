@@ -37,7 +37,7 @@ N13.define('App.Class', {
     /**
      * @interface
      * Calls after all initialization logic. Is used for
-     * post initializtion logic.
+     * post initialization logic.
      */
     afterInit: N13.emptyFn,
 
