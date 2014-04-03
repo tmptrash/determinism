@@ -30,28 +30,31 @@
     <option expr="false" />
     <option funcscope="false" />
     <option globalstrict="false" />
-    <option iterator="false" />
     <option lastsemic="false" />
     <option laxbreak="false" />
     <option laxcomma="false" />
-    <option loopfunc="false" />
     <option moz="false" />
     <option multistr="false" />
     <option notypeof="false" />
     <option proto="false" />
     <option scripturl="false" />
-    <option smarttabs="false" />
-    <option shadow="false" />
     <option sub="false" />
-    <option supernew="false" />
-    <option validthis="false" />
     <option browser="true" />
     <option couch="false" />
     <option devel="false" />
     <option dojo="false" />
+    <option gcl="false" />
+    <option iterator="false" />
+    <option loopfunc="false" />
+    <option smarttabs="false" />
+    <option supernew="false" />
     <option jquery="true" />
     <option mootools="false" />
     <option node="false" />
+    <option nonbsp="false" />
+    <option noyield="false" />
+    <option shadow="false" />
+    <option validthis="false" />
     <option nonstandard="false" />
     <option phantom="false" />
     <option prototypejs="false" />
@@ -64,7 +67,7 @@
     <option passfail="false" />
     <option white="false" />
     <option maxerr="100" />
-    <option predef="App, console, N13, Console" />
+    <option predef="App, console, N13, Console, assertTrue, assertFalse, assertNoException, assertException" />
   </component>
 </project>
 

@@ -1,0 +1,23 @@
+#
+# This is jsTestDriver server configuration file. It uses for WebStorm IDE server
+# and it's console version. For details about this file see documentation:
+# https://code.google.com/p/js-test-driver/
+#
+
+#
+# Here, we should keep all files, which should be included before test will be started. We don't need dynamic loading
+# so, all dependencies should be included in this section, but not in 'serve' section
+#
+load:
+  # Libraries section
+  - ../../lib/N13/src/n13.js
+  # Base classes section
+  - ../../js/Class.js
+
+#
+# Here, we should add test suite files
+#
+test:
+  - Class.js
+
+server: http://localhost:4224

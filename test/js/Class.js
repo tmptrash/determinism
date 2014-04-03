@@ -1,48 +1,36 @@
-/*global App */
-
 //noinspection JSHint
-TestCase("App.view.base.View", {
-    /**
-     * This function calls every time before test starts and creates empty container for current view
-     */
-    setUp: function () {
-        //
-        // {jQuery} We should create temporary placeholder for views on current document
-        //
-        $('body').append('<div id="viewContainer"></div>');
-        this.ct  = $('#viewContainer');
+TestCase("App.Class", {
+    testClassCreation: function () {
+        assertNoException('App.Class should be created without exceptions.', function () {
+            //noinspection JSHint
+            new App.Class();
+        });
     },
-    /**
-     * This function calls after test will complete and removes containers children
-     */
-    tearDown: function () {
-        $('body').children().remove();
-    },
-
-
-    //
-    // This is configuration section. All tests below will test config parameters.
-    //
 
     /*
-     * Tests base view template related logic
+     * Checks whatever Interface mixin works correctly in the most basic class.
+     * By works we mean calling of all interface methods.
      */
-    testElementConfig: function () {
-        var view = new App.view.base.View({element: '#viewContainer'});
+    testInterfaceMethods: function () {
+        var i   = 0;
+        var inc = function () {
+            i++;
+        };
 
-        assertTrue('Empty view with correct element config should be created', view.className === 'App.view.base.View');
+        N13.define('App.temp.Class', {
+            extend: 'App.Class',
 
-        assertTrue('View should has particular mixin', view.mixins.iface === 'App.mixin.Interface');
-        assertTrue('View should has particular mixin', view.mixins.observe === 'App.mixin.Observer');
-        assertTrue('View should has particular mixin', view.mixins.plugin === 'App.mixin.Plugin');
+            checkConfig : inc,
+            beforeInit  : inc,
+            initPrivates: inc,
+            initPublics : inc,
+            onInit      : inc,
+            afterInit   : inc
+        });
+        //noinspection JSHint
+        new App.temp.Class();
 
-        assertTrue('View should has particular propertys', view._ID_SEPARATOR === '-');
-    },
-
-    testElementConfig: function () {
-        var view = new App.view.base.View({element: '#viewContainer'});
-
-        assertFunction("this should be a function", view.init);
+        assertTrue('All public methods should be called', i === 6);
     }
 });
 
