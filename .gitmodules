@@ -1,3 +1,6 @@
 [submodule "js/lib/N13"]
 	path = js/lib/N13
 	url = https://github.com/tmptrash/N13.git
+[submodule "lib/N13"]
+	path = lib/N13
+	url = https://github.com/tmptrash/N13.git
