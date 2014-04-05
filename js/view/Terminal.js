@@ -18,40 +18,55 @@ N13.define('App.view.Terminal', {
     extend  : 'App.Class',
     requires: [
         'App.help.Common',
-        'App.help.String'
+        'App.help.String',
+        'App.help.Ui'
     ],
     configs : {
         /**
          * @required
-         * {String} textarea tag id
+         * {String} text area tag query
          */
-        id      : 'terminal',
+        element  : '#terminal',
         /**
          * {String} Name of the user in command line: user@host:~$
          */
-        user    : 'user',
+        user     : 'user',
         /**
          * {String} Name of the host in command line string: user@host:~$
          */
-        host    : 'localhost',
-        /**
-         * {Number} Terminal height in pixels
-         */
-        height  : 120,
+        host     : 'localhost',
         /**
          * {Array} Array of commands in format: [[command, cmdDescription],...]
          */
-        commands: []
+        commands : [],
+        /**
+         * {String} Color of the busy terminal. Should be in format: "#XXXXXX"
+         */
+        busyColor: '#111111',
+        /**
+         * {String} Format of the command handler method. e.g.: _onListCmd() for command "list"
+         */
+        cmdFormat: '_on{0}Cmd'
     },
 
 
     /**
-     * @override
-     * Checks and prepares configuration of the class.
+     * Is used for class state checking
      */
-    checkConfig: function () {
-        if (!N13.isString(this.id)) {
-            console.error('Invalid id in configuration. Method: ' + this.className + '::' + App.help.Common.getCallerName());
+    beforeInit: function () {
+        this.checkField('element',   String, $('textarea').eq(0));
+        this.checkField('user',      String, this.configs.user);
+        this.checkField('host',      String, this.configs.host);
+        this.checkField('commands',  Array,  this.configs.commands);
+        this.checkField('busyColor', String, this.configs.busyColor);
+        this.checkField('cmdFormat', String, this.configs.cmdFormat);
+
+        if (!Console) {
+            console.error(App.help.String.format('Required library "{0}" not found in class "{1}".', Console.name, this.className));
+        }
+        if (!$(this.element).length) {
+            console.error('Required config element wasn\'t set or appropriate tag doesn\'t exist.');
+            this.element = 'textarea:first';
         }
     },
 
@@ -60,15 +75,21 @@ N13.define('App.view.Terminal', {
      * No matter if they will be initialized by null or special value.
      */
     initPrivates: function () {
+        this.checkField('element',  String, $('textarea').eq(0));
+
         /**
          * {HTMLElement} Element of a text area for terminal.
          */
-        this._textAreaEl = $('#' + this.id);
+        this._textAreaEl = $(this.element);
         /**
          * @readonly
          * {Console} Shortcut for the console class instance
          */
         this._console    = Console;
+        /**
+         * {String} Default background color
+         */
+        this._defColor   = App.help.Ui.rgb2hex(this._textAreaEl.css('background-color'));
     },
 
     /**
@@ -77,14 +98,24 @@ N13.define('App.view.Terminal', {
      * within class. For example logic initialization or creation of HTML nodes.
      */
     onInit: function () {
-        //
-        // Turn on terminal's auto scroll all the time
-        //
-        this._textAreaEl.on('keyup', this._onTerminalKeyUp.bind(this));
+        this.checkField('user', String, this.configs.user);
+        this.checkField('host', String, this.configs.host);
+
+        this._updateId();
         //
         // Initializes third-party library, which emulates UNIX console.
         //
-        this._console.init(this.id, this.user, this.host, this.bindCommands());
+        this._console.init(this._textAreaEl.attr('id'), this.user, this.host, this.bindCommands());
+    },
+
+    /**
+     * Calls after all initialization is done. Is used for events binding.
+     */
+    afterInit: function () {
+        //
+        // Turn on terminal's auto scroll all the time
+        //
+        this._textAreaEl.on('keyup', this._onKeyUp.bind(this));
     },
 
     /**
@@ -93,6 +124,8 @@ N13.define('App.view.Terminal', {
      * @param {String} msg Message to notify
      */
     message: function (msg) {
+        msg = this.checkValue(msg, String, '');
+
         this._console.WriteLine(msg);
         this._console.ShowUserLine();
     },
@@ -102,27 +135,12 @@ N13.define('App.view.Terminal', {
      * @param {Boolean} busy true to disable terminal, false to enable
      */
     setBusy: function (busy) {
+        busy = this.checkValue(busy, Boolean, !this._textAreaEl.attr('disabled'));
+        this.checkField('busyColor', String, this.configs.busyColor);
+        
         this._textAreaEl.attr('disabled', busy);
-        this._textAreaEl.eq(0).style.background = busy ? '#111111' : '#000';
+        this._textAreaEl.css('background-color', busy ? this.busyColor : this._defColor);
         this._console.setBusy(busy);
-    },
-
-    /**
-     * Prepares string. Replace '\\n' by '\n' and remove " symbol at the beginning and at
-     * the end of string. It can be user for parameters truncate.
-     * @param {String} s
-     * @return {String} Prepared string
-     */
-    // TODO: i should check should i need it?
-    prepareString: function (s) {
-        if (s !== '""' && s.length > 2) {
-            if (s[0] === '"' && s[s.length - 1] === '"') {
-                s = s.substr(1, s.length - 2);
-            }
-            return s.replace('\\n', '\n');
-        }
-
-        return s;
     },
 
     /**
@@ -138,59 +156,21 @@ N13.define('App.view.Terminal', {
      * @return {Array} Array of three items. See the format above.
      */
     createCmdHandler: function (cmd, help) {
-        //
-        // In case of invalid command arguments, we will create empty command with empty handler
-        //
-        if (!N13.isString(cmd) || cmd === '') {
-            console.error('Invalid or empty command. This command will be skipped.', cmd);
+        var str = App.help.String;
+
+        cmd  = this.checkValue(cmd, String, null);
+        help = this.checkValue(help, String, '');
+        this.checkField('cmdFormat', String, this.configs.cmdFormat);
+
+        if (!cmd) {
             return null;
-        }
-        if (!N13.isString(help)) {
-            console.info(App.help.String('Command {0} doesn\'t contain help string ot it is empty.', cmd));
-            help = '';
         }
 
         return [
             cmd,
-            this._createMethod('_on' + App.help.String.capitalize(cmd) + 'Cmd'),
+            this._createMethod(str.format(str.capitalize(cmd), this.cmdFormat)),
             help
         ];
-    },
-
-    /**
-     * Checks arguments of a parent caller and throw error in case of invalid one. It also calls
-     * a validator with first argument if arguments array contains only one parameter otherwise with
-     * all arguments.
-     * @param {Number} argAmount Amount of required arguments
-     * @param {String} cmd Name of the command
-     * @param {Function|undefined} validator Optional validator function
-     * @throw {Error}
-     */
-    // TODO: i should check should i need it?
-    checkArguments: function (argAmount, cmd, validator) {
-        var valid;
-        var args = arguments.callee.caller.arguments[0].slice(1);
-
-        //
-        // null means, from 1 to any amount of arguments
-        //
-        if (argAmount === null && args.length < 1) {
-            throw new Error('Invalid arguments amount. At least one argument is required. See \'help ' + cmd + '\' for details.');
-        } else if (args.length < argAmount) {
-            throw new Error('Invalid arguments amount. Use \'help ' + cmd + '\' for help.');
-        }
-
-        //
-        // Validates arguments by custom validator
-        //
-        if (Lib.Helper.isFunction(validator)) {
-            valid = validator(args.length === 1 ? args[0] : args);
-            if (Lib.Helper.isString(valid)) {
-                throw new Error(valid + ' Use \'help ' + cmd + '\' for help.');
-            } else if (valid !== true) {
-                throw new Error('Invalid arguments format. Use \'help ' + cmd + '\' for help.');
-            }
-        }
     },
 
     /**
@@ -200,6 +180,8 @@ N13.define('App.view.Terminal', {
      * @return {Array} Array of two items arrays
      */
     bindCommands: function () {
+        this.checkField('commands', Array, this.configs.commands);
+
         var me    = this;
         var cmds  = me.commands;
         var ret   = [];
@@ -211,7 +193,7 @@ N13.define('App.view.Terminal', {
         for (i = 0, len = cmds.length; i < len; i++) {
             cmd = cmds[i];
             if (cmd.length > 1) {
-                cmd = me.createCmdHandler.apply(me, cmd);
+                cmd = me.createCmdHandler(cmd);
                 if (isArr(cmd)) {
                     ret.push(cmd);
                 }
@@ -247,7 +229,19 @@ N13.define('App.view.Terminal', {
      * 'keyup' DOM event handler. Scrolls terminal text area at the bottom.
      * @param {jQuery.Event} e
      */
-    _onTerminalKeyUp: function (e) {
+    _onKeyUp: function (e) {
         e.target.scrollTop = e.target.scrollHeight;
+    },
+
+    /**
+     * Updates id attribute of the textarea tag if doesn't exist
+     */
+    _updateId: function () {
+        //
+        // if textarea tag doesn't contain id, we should set it
+        //
+        if (!this._textAreaEl.attr('id')) {
+            this._textAreaEl.attr('id', this.getId());
+        }
     }
 });

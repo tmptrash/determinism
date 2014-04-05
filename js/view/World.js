@@ -37,35 +37,39 @@ N13.define('App.view.World', {
         /**
          * {App.view.Canvas} instance of canvas view
          */
-        this._canvas       = new App.view.Canvas();
+        this._canvas         = new App.view.Canvas();
         /**
          * {Number} Width of the canvas in pixels
          */
-        this._canvasWidth  = 0;
+        this._canvasWidth    = 0;
         /**
          * {Number} Height of the canvas in pixels
          */
-        this._canvasHeight = 0;
+        this._canvasHeight   = 0;
         /**
          * {App.view.Terminal} instance of terminal view
          */
-        this._terminal     = new App.view.Terminal();
+        this._terminal       = new App.view.Terminal();
+        /**
+         * {Number} Terminal height in pixels
+         */
+        this._terminalHeight = 120;
         /**
          * {Array} Array of elements in the world
          */
-        this._elements     = [];
+        this._elements       = [];
         /**
          * {jQuery} canvas tag jQuery element
          */
-        this._canvasEl     = $('#' + this.canvasId);
+        this._canvasEl       = $('#' + this.canvasId);
         /**
          * {CanvasRenderingContext2D} Canvas context
          */
-        this._context      = this._canvasEl[0].getContext('2d');
+        this._context        = this._canvasEl[0].getContext('2d');
         /**
          * {Number} Unique identifier of the interval (pooling) timer
          */
-        this._timerId      = null;
+        this._timerId        = null;
     },
 
     /**
@@ -118,7 +122,7 @@ N13.define('App.view.World', {
         var height   = html.height();
         var canvasEl = $('#' + this._canvas.id);
 
-        this._canvasHeight = height - this._terminal.height;
+        this._canvasHeight = height - this._terminalHeight;
         this._canvasWidth  = html.width();
         //
         // TIP: It's important to set attributes instead of css style, because
@@ -127,7 +131,7 @@ N13.define('App.view.World', {
         //
         canvasEl.attr('width',  this._canvasWidth);
         canvasEl.attr('height', this._canvasHeight);
-        $('#' + this._terminal.id).height(this._terminal.height);
+        $('#' + this._terminal.id).height(this._terminalHeight);
     },
 
     /**
