@@ -20,7 +20,6 @@ TestCase("App.Class", {
         N13.define('App.temp.Class', {
             extend: 'App.Class',
 
-            checkConfig : inc,
             beforeInit  : inc,
             initPrivates: inc,
             initPublics : inc,
@@ -30,7 +29,7 @@ TestCase("App.Class", {
         //noinspection JSHint
         new App.temp.Class();
 
-        assertTrue('All public methods should be called', i === 6);
+        assertTrue('All public methods should be called', i === 5);
     }
 });
 

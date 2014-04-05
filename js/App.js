@@ -18,7 +18,7 @@ N13.define('App.App', {
         /**
          * {App.view.World} The world, where all elements leave
          */
-        this._world = new App.view.World();
+        //this._world = new App.view.World();
     },
 
     /**
@@ -33,6 +33,6 @@ N13.define('App.App', {
      * Entry point of the application. It will be run after html is ready.
      */
     run: function () {
-        this._world.run();
+        //this._world.run();
     }
 });
