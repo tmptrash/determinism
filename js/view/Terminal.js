@@ -44,7 +44,8 @@ N13.define('App.view.Terminal', {
          */
         busyColor: '#111111',
         /**
-         * {String} Format of the command handler method. e.g.: _onListCmd() for command "list"
+         * {String} Format of the command handler method. e.g.: _onListCmd() for command "list".
+         * This format may use one argument - name of the command. For example: "_on{0}Cmd"
          */
         cmdFormat: '_on{0}Cmd'
     },
@@ -127,7 +128,8 @@ N13.define('App.view.Terminal', {
         msg = this.checkValue(msg, String, '');
 
         this._console.WriteLine(msg);
-        this._console.ShowUserLine();
+        // TODO: check if we need this
+        //this._console.ShowUserLine();
     },
 
     /**
@@ -168,7 +170,7 @@ N13.define('App.view.Terminal', {
 
         return [
             cmd,
-            this._createMethod(str.format(str.capitalize(cmd), this.cmdFormat)),
+            this._createMethod(str.format(this.cmdFormat, str.capitalize(cmd))),
             help
         ];
     },
@@ -193,7 +195,7 @@ N13.define('App.view.Terminal', {
         for (i = 0, len = cmds.length; i < len; i++) {
             cmd = cmds[i];
             if (cmd.length > 1) {
-                cmd = me.createCmdHandler(cmd);
+                cmd = me.createCmdHandler.apply(me, cmd);
                 if (isArr(cmd)) {
                     ret.push(cmd);
                 }
