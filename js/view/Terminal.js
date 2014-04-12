@@ -1,7 +1,7 @@
 /**
- * Class of the UNIX-like terminal widget. Consists of text area and console-like
+ * Class of the UNIX-like terminal widget. Consists of text area with console-like
  * logic inside. It uses third-party library - Console.js for history, command
- * line emulation and for commands callbacks.
+ * line emulation and commands callbacks.
  *
  *  ------------------------
  * | user@localhost:~$      |
@@ -13,6 +13,7 @@
  *  ------------------------
  *
  * @author DeadbraiN
+ * @email deadbrainman@gmail.com
  */
 N13.define('App.view.Terminal', {
     extend  : 'App.Class',
@@ -55,7 +56,9 @@ N13.define('App.view.Terminal', {
      * Is used for class state checking
      */
     beforeInit: function () {
-        this.checkField('element',   String, $('textarea').eq(0));
+        var el;
+
+        this.checkField('element',   String, 'textarea:first');
         this.checkField('user',      String, this.configs.user);
         this.checkField('host',      String, this.configs.host);
         this.checkField('commands',  Array,  this.configs.commands);
@@ -65,8 +68,8 @@ N13.define('App.view.Terminal', {
         if (!Console) {
             console.error(App.help.String.format('Required library "{0}" not found in class "{1}".', Console.name, this.className));
         }
-        if (!$(this.element).length) {
-            console.error('Required config element wasn\'t set or appropriate tag doesn\'t exist.');
+        if (!(el = $(this.element)).length || el.prop('tagName') !== 'TEXTAREA') {
+            console.error('Required config - element wasn\'t set or appropriate tag doesn\'t exist. textarea:first will be used.');
             this.element = 'textarea:first';
         }
     },
@@ -76,7 +79,7 @@ N13.define('App.view.Terminal', {
      * No matter if they will be initialized by null or special value.
      */
     initPrivates: function () {
-        this.checkField('element',  String, $('textarea').eq(0));
+        this.checkField('element',  String, 'textarea:first');
 
         /**
          * {HTMLElement} Element of a text area for terminal.
@@ -128,8 +131,7 @@ N13.define('App.view.Terminal', {
         msg = this.checkValue(msg, String, '');
 
         this._console.WriteLine(msg);
-        // TODO: check if we need this
-        //this._console.ShowUserLine();
+        this._console.ShowUserLine();
     },
 
     /**

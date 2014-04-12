@@ -67,7 +67,7 @@
     <option passfail="false" />
     <option white="false" />
     <option maxerr="100" />
-    <option predef="App, console, N13, Console, assertTrue, assertFalse, assertNoException, assertException" />
+    <option predef="App, console, N13, Console, assertTrue, assertFalse, assertNoException, assertException, TestCase, AsyncTestCase" />
   </component>
 </project>
 

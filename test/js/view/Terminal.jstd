@@ -10,9 +10,12 @@
 #
 load:
   # Libraries section
+  - ../../../lib/jquery-2.1.0.js
+  - ../../../lib/Console.js
   - ../../../lib/N13/src/n13.js
   # Base classes section
   - ../../../js/Class.js
+  - ../../../js/help/Ui.js
   - ../../../js/help/Common.js
   - ../../../js/help/String.js
   - ../../../js/view/Terminal.js
