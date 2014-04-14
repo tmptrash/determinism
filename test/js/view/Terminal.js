@@ -58,6 +58,13 @@ TestCase("App.view.Terminal", {
             term = new App.view.Terminal({element: '#testTerminal'});
             assertTrue('Hello string should be created', $('#testTerminal').val() === term.user + '@' + term.host + ':~$ ');
         });
+    },
+    testIncorrectElementConfig: function () {
+        App.test.util.Common.mapValues(function (val) {
+            assertException('Invalid element config should produce an error', function () {
+                //noinspection JSHint
+                new App.view.Terminal({element: val});
+            });
+        });
     }
 });
-

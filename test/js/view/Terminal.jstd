@@ -24,6 +24,7 @@ load:
 # Here, we should add test suite files
 #
 test:
+  - ../util/Common.js
   - Terminal.js
 
 server: http://localhost:4224
